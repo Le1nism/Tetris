@@ -5,10 +5,17 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.Random;
 
 import src.mino.Block;
 import src.mino.Mino;
+import src.mino.Mino_Bar;
 import src.mino.Mino_L1;
+import src.mino.Mino_L2;
+import src.mino.Mino_Square;
+import src.mino.Mino_T;
+import src.mino.Mino_Z1;
+import src.mino.Mino_Z2;
 
 public class PlayManager {
     
@@ -35,8 +42,40 @@ public class PlayManager {
         MINO_START_X = left_x + (WIDTH/2) - Block.SIZE;
         MINO_START_Y = top_y + Block.SIZE;
 
-        currentMino = new Mino_L1();
+        currentMino = pickMino();
         currentMino.setXY(MINO_START_X, MINO_START_Y);
+    }
+
+    private Mino pickMino() {
+
+        Mino mino = null;
+        int i = new Random().nextInt(7);
+
+        switch (i) {
+
+            case 0: mino = new Mino_L1();
+            break;
+
+            case 1: mino = new Mino_L2();
+            break;
+
+            case 2: mino = new Mino_Square();
+            break;
+
+            case 3: mino = new Mino_Bar();
+            break;
+
+            case 4: mino = new Mino_T();
+            break;
+
+            case 5: mino = new Mino_Z1();
+            break;
+
+            case 6: mino = new Mino_Z2();
+            break;
+        }
+
+        return mino;
     }
 
     public void update() {
