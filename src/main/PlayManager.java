@@ -38,6 +38,10 @@ public class PlayManager {
 
     public static int dropInterval = 60;
 
+    boolean effectCounterOn;
+    int effectCounter;
+    ArrayList<Integer> effectY = new ArrayList<>();
+
     public PlayManager() {
 
         left_x = (GamePanel.WIDTH/2) - (WIDTH/2);
@@ -105,8 +109,47 @@ public class PlayManager {
             currentMino.setXY(MINO_START_X, MINO_START_Y);
             nextMino = pickMino();
             nextMino.setXY(NEXTMINO_X, NEXTMINO_Y);
+
+            checkDelete();
         }
         else currentMino.update();
+    }
+
+    private void checkDelete() {
+
+        int x = left_x;
+        int y = top_y;
+        int blockCount = 0;
+
+        while (x < right_x && y < bottom_y) {
+
+            for (int i = 0; i < staticBlocks.size(); i++)
+                if (staticBlocks.get(i).x == x && staticBlocks.get(i).y == y)
+                    blockCount++;
+
+            x += Block.SIZE;
+
+            if (x == right_x) {
+
+                if (blockCount == 12) {
+
+                    effectCounterOn = true;
+                    effectY.add(y);
+
+                    for (int i = staticBlocks.size() - 1; i > -1; i--)
+                        if (staticBlocks.get(i).y == y)
+                            staticBlocks.remove(i);
+
+                    for (int i = 0; i < staticBlocks.size(); i++)
+                        if (staticBlocks.get(i).y < y)
+                            staticBlocks.get(i).y += Block.SIZE;
+                    
+                }
+                blockCount = 0;
+                x = left_x;
+                y += Block.SIZE;
+            }
+        }
     }
 
     public void draw(Graphics2D g2) {
@@ -129,6 +172,22 @@ public class PlayManager {
 
         for (int i = 0; i < staticBlocks.size(); i++)
             staticBlocks.get(i).draw(g2);
+
+        if (effectCounterOn) {
+
+            effectCounter++;
+            g2.setColor(Color.red);
+
+            for (int i = 0; i < effectY.size(); i++)
+                g2.fillRect(left_x, effectY.get(i), WIDTH, Block.SIZE);
+                
+            if (effectCounter == 10) {
+
+                effectCounterOn = false;
+                effectCounter = 0;
+                effectY.clear();
+            }
+        }
  
         g2.setColor(Color.yellow);
         g2.setFont(g2.getFont().deriveFont(50f));
