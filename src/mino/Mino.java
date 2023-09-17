@@ -80,6 +80,8 @@ public class Mino {
         rightCollision = false;
         bottomCollision = false;
 
+        checkStaticBlockCollision();
+
         for (int i = 0; i < b.length; i++)
             if (b[i].x == PlayManager.left_x)
                 leftCollision = true;
@@ -99,6 +101,8 @@ public class Mino {
         rightCollision = false;
         bottomCollision = false;
 
+        checkStaticBlockCollision();
+
         for (int i = 0; i < b.length; i++)
             if (tempB[i].x < PlayManager.left_x)
                 leftCollision = true;
@@ -110,6 +114,27 @@ public class Mino {
         for (int i = 0; i < b.length; i++)
             if (tempB[i].y + Block.SIZE > PlayManager.bottom_y)
                 bottomCollision = true;
+    }
+
+    private void checkStaticBlockCollision() {
+
+        for (int i = 0; i < PlayManager.staticBlocks.size(); i++) {
+
+            int targetX = PlayManager.staticBlocks.get(i).x;
+            int targetY = PlayManager.staticBlocks.get(i).y;
+
+            for (int j = 0; j < b.length; j++)
+                if (b[j].y + Block.SIZE == targetY && b[j].x == targetX)
+                    bottomCollision = true;
+
+            for (int j = 0; j < b.length; j++)
+                if (b[j].x - Block.SIZE == targetX && b[j].y == targetY)
+                    leftCollision = true;
+
+            for (int j = 0; j < b.length; j++)
+                if (b[j].x + Block.SIZE == targetX && b[j].y == targetY)
+                    rightCollision = true;
+        }
     }
 
     public void update() {
