@@ -17,6 +17,8 @@ public class Mino {
     boolean rightCollision;
     boolean bottomCollision;
 
+    public boolean active = true;
+
     public void create(Color c) {
 
         b[0] = new Block(c);
@@ -175,14 +177,20 @@ public class Mino {
             KeyHandler.rightPressed = false;
         }
 
-        autoDropCounter++;
-        if (autoDropCounter == PlayManager.dropInterval) {
+        if (bottomCollision)
+            active = false;
 
-            b[0].y += Block.SIZE;
-            b[1].y += Block.SIZE;
-            b[2].y += Block.SIZE;
-            b[3].y += Block.SIZE;
-            autoDropCounter = 0;
+        else {
+
+            autoDropCounter++;
+            if (autoDropCounter == PlayManager.dropInterval) {
+
+                b[0].y += Block.SIZE;
+                b[1].y += Block.SIZE;
+                b[2].y += Block.SIZE;
+                b[3].y += Block.SIZE;
+                autoDropCounter = 0;
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
 import java.util.Random;
 
 import src.mino.Block;
@@ -30,6 +31,11 @@ public class PlayManager {
     final int MINO_START_X;
     final int MINO_START_Y;
 
+    Mino nextMino;
+    final int NEXTMINO_X;
+    final int NEXTMINO_Y;
+    public static ArrayList<Block> staticBlocks = new ArrayList<>();
+
     public static int dropInterval = 60;
 
     public PlayManager() {
@@ -42,8 +48,14 @@ public class PlayManager {
         MINO_START_X = left_x + (WIDTH/2) - Block.SIZE;
         MINO_START_Y = top_y + Block.SIZE;
 
+        NEXTMINO_X = right_x + 175;
+        NEXTMINO_Y = top_y + 500;
+
         currentMino = pickMino();
         currentMino.setXY(MINO_START_X, MINO_START_Y);
+        
+        nextMino = pickMino();
+        nextMino.setXY(NEXTMINO_X, NEXTMINO_Y);
     }
 
     private Mino pickMino() {
@@ -80,7 +92,19 @@ public class PlayManager {
 
     public void update() {
 
-        currentMino.update();
+        if (!currentMino.active) {
+
+            staticBlocks.add(currentMino.b[0]);
+            staticBlocks.add(currentMino.b[1]);
+            staticBlocks.add(currentMino.b[2]);
+            staticBlocks.add(currentMino.b[3]);
+
+            currentMino = nextMino;
+            currentMino.setXY(MINO_START_X, MINO_START_Y);
+            nextMino = pickMino();
+            nextMino.setXY(NEXTMINO_X, NEXTMINO_Y);
+        }
+        else currentMino.update();
     }
 
     public void draw(Graphics2D g2) {
@@ -96,11 +120,14 @@ public class PlayManager {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString("NEXT", x + 60, y + 60);
 
-        if (currentMino != null) {
-
+        if (currentMino != null) 
             currentMino.draw(g2);
-        }
 
+        nextMino.draw(g2);
+
+        for (int i = 0; i < staticBlocks.size(); i++)
+            staticBlocks.get(i).draw(g2);
+ 
         g2.setColor(Color.yellow);
         g2.setFont(g2.getFont().deriveFont(50f));
 
