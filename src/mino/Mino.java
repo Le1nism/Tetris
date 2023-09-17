@@ -3,6 +3,7 @@ package src.mino;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import src.main.GamePanel;
 import src.main.KeyHandler;
 import src.main.PlayManager;
 
@@ -163,6 +164,7 @@ public class Mino {
             }
 
             KeyHandler.upPressed = false;
+            GamePanel.se.play(3, false);
         }
 
         checkMovementCollision();
@@ -208,9 +210,13 @@ public class Mino {
             KeyHandler.rightPressed = false;
         }
 
-        if (bottomCollision)
-            deactivating = true;
+        if (bottomCollision) {
 
+            if (!deactivating)
+                GamePanel.se.play(4, false);
+
+            deactivating = true;
+        }
         else {
 
             autoDropCounter++;
