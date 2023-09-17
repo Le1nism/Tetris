@@ -19,6 +19,9 @@ public class Mino {
 
     public boolean active = true;
 
+    public boolean deactivating;
+    int deactivateCounter = 0;
+
     public void create(Color c) {
 
         b[0] = new Block(c);
@@ -139,6 +142,9 @@ public class Mino {
 
     public void update() {
 
+        if (deactivating)
+            deactivating();
+
         if (KeyHandler.upPressed) {
 
             switch (direction) {
@@ -203,7 +209,7 @@ public class Mino {
         }
 
         if (bottomCollision)
-            active = false;
+            deactivating = true;
 
         else {
 
@@ -216,6 +222,20 @@ public class Mino {
                 b[3].y += Block.SIZE;
                 autoDropCounter = 0;
             }
+        }
+    }
+
+    public void deactivating() {
+
+        deactivateCounter++;
+
+        if (deactivateCounter == 45) {
+
+            deactivateCounter = 0;
+            checkMovementCollision();
+
+            if (bottomCollision)
+                active = false;
         }
     }
 
